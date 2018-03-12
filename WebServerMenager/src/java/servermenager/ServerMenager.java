@@ -90,7 +90,7 @@ public class ServerMenager {
                     try {
                         currentTaskLog.changeRecord(rec.getId(), rec.getName(), rec.getTimeString(), rec.getDescription(), rec.getContacts());
                         out.writeUTF("OK");
-                    } catch (InvalidRecordFieldException | IndexOutOfBoundsException ex) {
+                    } catch(Exception ex){
                         out.writeUTF(ex.getMessage());
                     }
                     out.flush();

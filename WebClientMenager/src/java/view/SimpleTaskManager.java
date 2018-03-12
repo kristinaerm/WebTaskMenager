@@ -48,8 +48,10 @@ public class SimpleTaskManager extends javax.swing.JFrame {
         clear();
         try {
             Controller.updateTable();
-        } catch (IOException | ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } catch (IOException ex) { 
+            Logger.getLogger(SimpleTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SimpleTaskManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         records = Controller.getRecords();
     }
@@ -242,9 +244,13 @@ public class SimpleTaskManager extends javax.swing.JFrame {
                 rec = new Record(jTextField1.getText(), jTextField3.getText(), jTextField2.getText(), jTextField4.getText());
                 Controller.addRecord(rec);
                 clear();
-            } catch (InvalidRecordFieldException | IOException | ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
-            }
+            } catch (InvalidRecordFieldException ex) {
+                Logger.getLogger(SimpleTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(SimpleTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(SimpleTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+            } 
         } else {
             JOptionPane.showMessageDialog(null, "Для добавления записи все поля необходимо заполнить!");
         }
@@ -281,9 +287,13 @@ public class SimpleTaskManager extends javax.swing.JFrame {
                 clear();
             }
             clear();
-        } catch (InvalidRecordFieldException | IOException | ClassNotFoundException e) {
+        } catch (IOException ex) {
+            Logger.getLogger(SimpleTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Номер записи указан не верно!");
-        }
+        } catch (InvalidRecordFieldException ex) {
+             JOptionPane.showMessageDialog(null, "Номер записи указан не верно!");
+        } 
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -372,7 +382,7 @@ public class SimpleTaskManager extends javax.swing.JFrame {
 
     public void setTray() {
         try {
-            TrayIcon iconTray;
+            final TrayIcon iconTray;
             SystemTray sT = SystemTray.getSystemTray();
             iconTray = new TrayIcon(ImageIO.read(new File("Ikonka.jpg")));
             iconTray.setImageAutoSize(true);
@@ -432,9 +442,11 @@ public class SimpleTaskManager extends javax.swing.JFrame {
             });
 
             sT.add(iconTray);
-        } catch (IOException | AWTException ex) {
+        } catch (AWTException ex) {
             Logger.getLogger(SimpleTaskManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (IOException ex) {
+            Logger.getLogger(SimpleTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }
 
     public static void setReacords(Record[] r) {

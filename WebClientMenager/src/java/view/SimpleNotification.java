@@ -10,6 +10,8 @@ import clientmenager.Controller;
 import exceptions.InvalidRecordFieldException;
 import java.awt.HeadlessException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -155,8 +157,12 @@ public class SimpleNotification extends javax.swing.JFrame {
         try {
             Controller.stopExposing(record.getId());
             Controller.deleteRecord(record);
-        } catch (IOException | ClassNotFoundException | InvalidRecordFieldException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+        } catch (IOException ex) { 
+            Logger.getLogger(SimpleNotification.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SimpleNotification.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidRecordFieldException ex) {
+            Logger.getLogger(SimpleNotification.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -176,8 +182,12 @@ public class SimpleNotification extends javax.swing.JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, result);
                 }
-            } catch (InvalidRecordFieldException | HeadlessException | IOException | ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
+            } catch (IOException ex) {
+                Logger.getLogger(SimpleNotification.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(SimpleNotification.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidRecordFieldException ex) {
+                Logger.getLogger(SimpleNotification.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
                 this.dispose();
             }

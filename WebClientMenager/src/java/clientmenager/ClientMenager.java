@@ -110,9 +110,11 @@ public class ClientMenager {
                 }
             });
 
-        } catch (IOException | InvalidRecordFieldException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(ClientMenager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (InvalidRecordFieldException ex) {
+            Logger.getLogger(ClientMenager.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }
 
 }

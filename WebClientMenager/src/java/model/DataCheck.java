@@ -7,6 +7,8 @@ package model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -69,8 +71,8 @@ public class DataCheck {
                 return false;
             }
 
-        } catch (NumberFormatException | ParseException ex) {
-            return false;
+        } catch (ParseException ex) {
+            Logger.getLogger(DataCheck.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return false;

@@ -147,10 +147,12 @@ public class ChangeRecord extends javax.swing.JFrame {
                 Controller.changeRecord(r);
                 Controller.updateTable();
                 this.dispose();
-            } catch (IOException | ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
             } catch (InvalidRecordFieldException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage());
+            } catch (IOException ex) {
+                Logger.getLogger(ChangeRecord.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ChangeRecord.class.getName()).log(Level.SEVERE, null, ex);
             }            
         } else {
             JOptionPane.showMessageDialog(null, "Все поля должны быть заполнены.");

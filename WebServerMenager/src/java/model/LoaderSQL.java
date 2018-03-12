@@ -26,8 +26,6 @@ import javax.sql.DataSource;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import oracle.jdbc.driver.OracleDriver;
-import oracle.jdbc.pool.OracleDataSource;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.beans.PropertyVetoException;
@@ -165,7 +163,7 @@ public class LoaderSQL implements Loader {
             Statement st = con.createStatement();
             st.executeUpdate("INSERT INTO users (id_user, login, password) VALUES ("+idUser+", "+passworduser+","+loginuser+")");
             st.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) { 
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
@@ -180,7 +178,7 @@ public class LoaderSQL implements Loader {
             Statement st = con.createStatement();
             st.executeUpdate("INSERT INTO usertask (id_user,id_task) VALUES ("+idUser+","+idTask+")");
             st.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) { 
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
@@ -195,7 +193,7 @@ public class LoaderSQL implements Loader {
             Statement st = con.createStatement();
             st.executeUpdate("DELETE FROM task WHERE id_task="+idTask);
             st.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
@@ -210,7 +208,7 @@ public class LoaderSQL implements Loader {
             Statement st = con.createStatement();
             st.executeUpdate("DELETE FROM users WHERE idUser="+idUser);
             st.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) { 
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
@@ -225,7 +223,7 @@ public class LoaderSQL implements Loader {
             Statement st = con.createStatement();
             st.executeUpdate("DELETE FROM usertask WHERE (idUser = "+idUser+" AND id_task = "+idTask + ")");
             st.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
@@ -240,7 +238,7 @@ public class LoaderSQL implements Loader {
             Statement st = con.createStatement();
             st.executeUpdate("UPDATE task SET name_task = "+name+", description = "+description+",contacts = "+contacts+",time_task = "+time+"WHERE id_task = "+idTask);
             st.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
@@ -256,7 +254,7 @@ public class LoaderSQL implements Loader {
             Statement st = con.createStatement();
             st.executeUpdate("UPDATE users SET login = "+loginuser+", password = "+passworduser+" WHERE idUser = "+idUser);
             st.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException ex) { 
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
