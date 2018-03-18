@@ -4,6 +4,7 @@
     Author     : USER
 --%>
 
+<%@page import="java.io.Reader"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -17,6 +18,10 @@
         <table id = "tasklog">
             <tr><th>№</th><th>Время</th><th>Название</th><th>Описание</th><th>Контакты</th><th>Выбрать</th></tr>
             <tr><td></td><td></td><td></td><td>Тут пока пусто</td><td></td><td><input type="radio" name="check" ></td></tr>
+            <%--
+                Object[] rec = (Object[])request.getAttribute("records");
+                
+            --%>
         </table>
         <br>
         <table>
