@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import model.LoaderSQL;
 import model.Loaders;
 import model.Record;
 import model.TaskLog;
@@ -47,6 +48,7 @@ public class ServerMenager {
       //  load.setLoaders('X');
        load.setLoaders('S');//для записи в БД 
         //User u = load.readDocument(document);
+       // LoaderSQL s=new LoaderSQL(); 
         User u=load.readDocument(null, null);
         TaskLog currentTaskLog = u.getTaskLog();
 

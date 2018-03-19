@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.beans.PropertyVetoException;
+import java.util.Locale;
 
 /**
  *
@@ -40,6 +41,11 @@ public class LoaderSQL implements Loader {
     private static final String LOGIN = "data";
     private static final String PASSWORD = "1";
     private static final String URL = "jdbc:oracle:thin:@localhost:1521:XE";
+    
+      static {
+        Locale.setDefault(Locale.ENGLISH);
+             }
+      
 //метод записи в базу данных
     @Override
     public void addUser(Document document, User us) throws FileNotFoundException, TransformerException {
@@ -59,12 +65,14 @@ public class LoaderSQL implements Loader {
     @Override
     public User readDocument( String log, String pass) throws SQLException, InvalidRecordFieldException {
         User user = null;
+        
+             
         try {
-    
-          Class.forName("oracle.jdbc.OracleDriver");
-          InitialContext ctx = new InitialContext();
-          DataSource ds = (DataSource) ctx.lookup("jdbc/myoracle");//
-           con = ds.getConnection();
+              Context initContext = new InitialContext();
+              Context envContext = (Context) initContext.lookup("java:/comp/env");
+              DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            Connection conn = ds.getConnection();
+          
           //   con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "data", "1");
            // con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
             System.out.println("Connection Established");
@@ -103,10 +111,6 @@ public class LoaderSQL implements Loader {
                 con.close();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-        }/* catch (NamingException ex) {
-            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-      }*/ catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
