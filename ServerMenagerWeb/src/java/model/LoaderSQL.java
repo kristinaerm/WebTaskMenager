@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.beans.PropertyVetoException;
+import java.sql.PreparedStatement;
 import java.util.Locale;
 
 /**
@@ -41,40 +42,36 @@ public class LoaderSQL implements Loader {
     private static final String LOGIN = "data";
     private static final String PASSWORD = "1";
     private static final String URL = "jdbc:oracle:thin:@localhost:1521:XE";
-    
-      static {
-        Locale.setDefault(Locale.ENGLISH);
-             }
-      
+
 //метод записи в базу данных
     @Override
     public void addUser(Document document, User us) throws FileNotFoundException, TransformerException {
         try {
             clearDatabase(us);
-            addDataInTableUser(us.getId(),us.getPassword(),us.getLogin());
-            for(int i=0;i<us.getTaskLog().getNumberOfRecords();i++)
-            {
-                addDataInTableTask(us.getTaskLog().getRecord(i).getId(),us.getTaskLog().getRecord(i).getName(),us.getTaskLog().getRecord(i).getTimeString(),us.getTaskLog().getRecord(i).getContacts(),us.getTaskLog().getRecord(i).getDescription());
-                addDataInTableUserTask(us.getId(),us.getTaskLog().getRecord(i).getId());
+            addDataInTableUser(us.getId(), us.getPassword(), us.getLogin());
+            for (int i = 0; i < us.getTaskLog().getNumberOfRecords(); i++) {
+                addDataInTableTask(us.getTaskLog().getRecord(i).getId(), us.getTaskLog().getRecord(i).getName(), us.getTaskLog().getRecord(i).getTimeString(), us.getTaskLog().getRecord(i).getContacts(), us.getTaskLog().getRecord(i).getDescription());
+                addDataInTableUserTask(us.getId(), us.getTaskLog().getRecord(i).getId());
             }
         } catch (SQLException ex) {
+            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
-    public User readDocument( String log, String pass) throws SQLException, InvalidRecordFieldException {
+    public User readDocument(String log, String pass) throws SQLException, InvalidRecordFieldException {
         User user = null;
-        
-             
+
         try {
-              Context initContext = new InitialContext();
-              Context envContext = (Context) initContext.lookup("java:/comp/env");
-              DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
             Connection conn = ds.getConnection();
-          
-          //   con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "data", "1");
-           // con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
+
+            //   con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "data", "1");
+            // con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
             System.out.println("Connection Established");
             Statement st;
             ResultSet rs;
@@ -84,16 +81,16 @@ public class LoaderSQL implements Loader {
                 String id_user = rs.getString("id_user");
                 rs.close();
                 st.close();
-                
+
                 st = con.createStatement();
                 rs = st.executeQuery("SELECT id_task FROM usertask WHERE id_user = " + id_user);
-                LinkedList <String> id_tasks = new LinkedList();
+                LinkedList<String> id_tasks = new LinkedList();
                 while (rs.next()) {
                     id_tasks.add(rs.getString("id_task"));
                 }
                 rs.close();
                 st.close();
-                
+
                 LinkedList<Record> records = new LinkedList();
                 Record rec;
                 for (int i = 0; i < id_tasks.size(); i++) {
@@ -104,9 +101,9 @@ public class LoaderSQL implements Loader {
                     rs.close();
                     st.close();
                 }
-                
+
                 user = new User(id_user, log, pass, records);
-                
+
             } finally {
                 con.close();
             }
@@ -122,7 +119,7 @@ public class LoaderSQL implements Loader {
     public void writeDocument(Document document) throws TransformerConfigurationException, FileNotFoundException, TransformerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 //    public Connection connection() throws SQLException
 //    {
 //        Connection con =null;
@@ -149,12 +146,12 @@ public class LoaderSQL implements Loader {
             System.out.println("Connection Established");
             //создаем statement для запроса
             Statement st = con.createStatement();
-            st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES ("+idTask+", "+name+", "+description+", "+contacts+","+time+")");
+            st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES (" + idTask + ", " + name + ", " + description + ", " + contacts + "," + time + ")");
             st.close();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         con.close();
     }
 
@@ -165,9 +162,9 @@ public class LoaderSQL implements Loader {
             System.out.println("Connection Established");
             //создаем statement для запроса
             Statement st = con.createStatement();
-            st.executeUpdate("INSERT INTO users (id_user, login, password) VALUES ("+idUser+", "+passworduser+","+loginuser+")");
+            st.executeUpdate("INSERT INTO users (id_user, login, password) VALUES (" + idUser + ", " + passworduser + "," + loginuser + ")");
             st.close();
-        } catch (ClassNotFoundException ex) { 
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
@@ -180,75 +177,67 @@ public class LoaderSQL implements Loader {
             System.out.println("Connection Established");
             //создаем statement для запроса
             Statement st = con.createStatement();
-            st.executeUpdate("INSERT INTO usertask (id_user,id_task) VALUES ("+idUser+","+idTask+")");
+            st.executeUpdate("INSERT INTO usertask (id_user,id_task) VALUES (" + idUser + "," + idTask + ")");
             st.close();
-        } catch (ClassNotFoundException ex) { 
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
     }
 
-    public void deleteDataInTableTask(String idTask) throws SQLException {
+    public void deleteDataInTableTask(String idTask) throws SQLException, NamingException {
+        PreparedStatement st = null;
+        Context initContext = new InitialContext();
+        Context envContext = (Context) initContext.lookup("java:/comp/env");
+        DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+        Connection conn = ds.getConnection();
+        st = conn.prepareStatement("DELETE FROM TASK WHERE ID_TASK= '" + idTask + "'");
+        st.executeUpdate();
+        st.close();
+
+        conn.close();
+    }
+
+    public void deleteDataInTableUser(String idUser) throws SQLException, NamingException {
+        Context initContext = new InitialContext();
+        Context envContext = (Context) initContext.lookup("java:/comp/env");
+        DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+        Connection conn = ds.getConnection();
+        Statement st = conn.createStatement();
+        st.executeUpdate("DELETE FROM users WHERE idUser='" + idUser + "'");
+        st.close();
+
+        conn.close();
+    }
+
+    public void deleteDataInTableUserTask(String idUser, String idTask) throws SQLException, NamingException {
+        Context initContext = new InitialContext();
+        Context envContext = (Context) initContext.lookup("java:/comp/env");
+        DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+        Connection conn = ds.getConnection();
+        Statement st = conn.createStatement();
+        // st.executeUpdate("DELETE FROM usertask WHERE (idUser = "+idUser+" AND id_task = "+idTask + ")");
+        st.executeUpdate("DELETE FROM TASK WHERE ID_TASK= '" + idTask + "'");
+        st.close();
+
+        conn.close();
+    }
+
+    public void changeDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException {
         try {
             Class.forName("oracle.jdbc.OracleDriver");
             con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
             System.out.println("Connection Established");
             //создаем statement для запроса
             Statement st = con.createStatement();
-            st.executeUpdate("DELETE FROM task WHERE id_task="+idTask);
+            st.executeUpdate("UPDATE task SET name_task = " + name + ", description = " + description + ",contacts = " + contacts + ",time_task = " + time + "WHERE id_task = " + idTask);
             st.close();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
     }
-    
-    public void deleteDataInTableUser(String idUser) throws SQLException {
-        try {
-            Class.forName("oracle.jdbc.OracleDriver");
-            con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
-            //создаем statement для запроса
-            Statement st = con.createStatement();
-            st.executeUpdate("DELETE FROM users WHERE idUser="+idUser);
-            st.close();
-        } catch (ClassNotFoundException ex) { 
-            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        con.close();
-    }
-    
-    public void deleteDataInTableUserTask(String idUser, String idTask) throws SQLException {
-        try {
-            Class.forName("oracle.jdbc.OracleDriver");
-            con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
-            //создаем statement для запроса
-            Statement st = con.createStatement();
-            st.executeUpdate("DELETE FROM usertask WHERE (idUser = "+idUser+" AND id_task = "+idTask + ")");
-            st.close();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        con.close();
-    }
-    
-        public void changeDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException {
-        try {
-            Class.forName("oracle.jdbc.OracleDriver");
-            con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
-            //создаем statement для запроса
-            Statement st = con.createStatement();
-            st.executeUpdate("UPDATE task SET name_task = "+name+", description = "+description+",contacts = "+contacts+",time_task = "+time+"WHERE id_task = "+idTask);
-            st.close();
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        con.close();
-    }
-   
-    
+
     public void changeDataInTableUser(String idUser, String passworduser, String loginuser) throws SQLException {
         try {
             Class.forName("oracle.jdbc.OracleDriver");
@@ -256,19 +245,18 @@ public class LoaderSQL implements Loader {
             System.out.println("Connection Established");
             //создаем statement для запроса
             Statement st = con.createStatement();
-            st.executeUpdate("UPDATE users SET login = "+loginuser+", password = "+passworduser+" WHERE idUser = "+idUser);
+            st.executeUpdate("UPDATE users SET login = " + loginuser + ", password = " + passworduser + " WHERE idUser = " + idUser);
             st.close();
-        } catch (ClassNotFoundException ex) { 
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
-    
+
     }
-    public void clearDatabase(User us) throws SQLException
-    {
+
+    public void clearDatabase(User us) throws SQLException, NamingException {
         deleteDataInTableUser(us.getId());
-        for(int i=0;i<us.getTaskLog().getNumberOfRecords();i++)
-        {
+        for (int i = 0; i < us.getTaskLog().getNumberOfRecords(); i++) {
             deleteDataInTableTask(us.getTaskLog().getRecord(i).getId());
             deleteDataInTableUserTask(us.getId(), us.getTaskLog().getRecord(i).getId());
         }
