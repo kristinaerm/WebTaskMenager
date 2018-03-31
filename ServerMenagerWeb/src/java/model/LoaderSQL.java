@@ -65,14 +65,13 @@ public class LoaderSQL implements Loader {
         User user = null;
 
         try {
+            Locale.setDefault(Locale.ENGLISH);
+
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
             Connection conn = ds.getConnection();
 
-            //   con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "data", "1");
-            // con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
             Statement st;
             ResultSet rs;
             try {
@@ -120,35 +119,18 @@ public class LoaderSQL implements Loader {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    public Connection connection() throws SQLException
-//    {
-//        Connection con =null;
-//        try {
-//            Class.forName("oracle.jdbc.OracleDriver");
-//            String URL="jdbc:oracle:thin:@localhost:1521:XE";;
-//            String LOGIN="data";
-//            String PASSWORD="1";
-//            con= DriverManager.getConnection(URL, LOGIN, PASSWORD);
-//            System.out.println("Connection Established");
-//        } catch (ClassNotFoundException ex) {
-//            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-//        }finally{
-//            con.close();
-//        }
-//        return con;
-//    }
     public void addDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException {
         try {
-            Class.forName("oracle.jdbc.OracleDriver");
-            con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
-            //создаем statement для запроса
-            Statement st = con.createStatement();
+            Locale.setDefault(Locale.ENGLISH);
+
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            Connection conn = ds.getConnection();
+            Statement st = conn.createStatement();
             st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES (" + idTask + ", " + name + ", " + description + ", " + contacts + "," + time + ")");
             st.close();
-        } catch (ClassNotFoundException ex) {
+        } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -157,14 +139,17 @@ public class LoaderSQL implements Loader {
 
     public void addDataInTableUser(String idUser, String passworduser, String loginuser) throws SQLException {
         try {
-            Class.forName("oracle.jdbc.OracleDriver");
-            con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
+            Locale.setDefault(Locale.ENGLISH);
+
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            Connection conn = ds.getConnection();
             //создаем statement для запроса
-            Statement st = con.createStatement();
+            Statement st = conn.createStatement();
             st.executeUpdate("INSERT INTO users (id_user, login, password) VALUES (" + idUser + ", " + passworduser + "," + loginuser + ")");
             st.close();
-        } catch (ClassNotFoundException ex) {
+        } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
@@ -172,20 +157,24 @@ public class LoaderSQL implements Loader {
 
     public void addDataInTableUserTask(String idUser, String idTask) throws SQLException {
         try {
-            Class.forName("oracle.jdbc.OracleDriver");
-            con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
+            Locale.setDefault(Locale.ENGLISH);
+
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            Connection conn = ds.getConnection();
             //создаем statement для запроса
-            Statement st = con.createStatement();
+            Statement st = conn.createStatement();
             st.executeUpdate("INSERT INTO usertask (id_user,id_task) VALUES (" + idUser + "," + idTask + ")");
             st.close();
-        } catch (ClassNotFoundException ex) {
+        } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         con.close();
     }
 
     public void deleteDataInTableTask(String idTask) throws SQLException, NamingException {
+        Locale.setDefault(Locale.ENGLISH);
         PreparedStatement st = null;
         Context initContext = new InitialContext();
         Context envContext = (Context) initContext.lookup("java:/comp/env");
@@ -199,6 +188,7 @@ public class LoaderSQL implements Loader {
     }
 
     public void deleteDataInTableUser(String idUser) throws SQLException, NamingException {
+        Locale.setDefault(Locale.ENGLISH);
         Context initContext = new InitialContext();
         Context envContext = (Context) initContext.lookup("java:/comp/env");
         DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
@@ -211,6 +201,7 @@ public class LoaderSQL implements Loader {
     }
 
     public void deleteDataInTableUserTask(String idUser, String idTask) throws SQLException, NamingException {
+        Locale.setDefault(Locale.ENGLISH);
         Context initContext = new InitialContext();
         Context envContext = (Context) initContext.lookup("java:/comp/env");
         DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
@@ -224,33 +215,43 @@ public class LoaderSQL implements Loader {
     }
 
     public void changeDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException {
+         Connection conn=null;
+         PreparedStatement st = null;
         try {
-            Class.forName("oracle.jdbc.OracleDriver");
-            con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
-            //создаем statement для запроса
-            Statement st = con.createStatement();
-            st.executeUpdate("UPDATE task SET name_task = " + name + ", description = " + description + ",contacts = " + contacts + ",time_task = " + time + "WHERE id_task = " + idTask);
+            Locale.setDefault(Locale.ENGLISH);
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+             conn = ds.getConnection();
+     //       st = conn.prepareStatement("UPDATE TASK SET name_task = '"+ name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
+          st = conn.prepareStatement("UPDATE TASK SET time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
+     st.executeUpdate();
+       
+           // Statement st = conn.createStatement();
+           // st.executeUpdate("UPDATE TASK SET name_task = '"+ name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
             st.close();
-        } catch (ClassNotFoundException ex) {
+        } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
-        con.close();
+        conn.close();
     }
 
     public void changeDataInTableUser(String idUser, String passworduser, String loginuser) throws SQLException {
+         Connection conn=null;
         try {
-            Class.forName("oracle.jdbc.OracleDriver");
-            con = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-            System.out.println("Connection Established");
-            //создаем statement для запроса
-            Statement st = con.createStatement();
+            Locale.setDefault(Locale.ENGLISH);
+
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            conn = ds.getConnection();
+            Statement st = conn.createStatement();
             st.executeUpdate("UPDATE users SET login = " + loginuser + ", password = " + passworduser + " WHERE idUser = " + idUser);
             st.close();
-        } catch (ClassNotFoundException ex) {
+        } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
-        con.close();
+        conn.close();
 
     }
 

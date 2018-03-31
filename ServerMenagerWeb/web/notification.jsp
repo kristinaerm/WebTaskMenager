@@ -23,11 +23,15 @@
                 <input type="text" maxlength="30" size="30" id="txt2" name="desc"/></p>
             <p>Контакты:
                 <input type="text" maxlength="40" size="40" id="txt3" name="conc"/></p>
-            
-            <h4><input type="submit" id="btn" value="Выполнить"></h4>
+             
+            <h4><input  type="submit" id="btn" value="Выполнить"></h4>
            
-        </form>
+         </form >
+        <form action="p" method="post">
+          
         <h3><input type="text" maxlength="40" size="25" id="txt4" name="tch"/></h3>
-        <h5><input type="submit" id="btn1" value="Отложить на  другое время"></h5>
+        <h5><input  type="submit" id="btn1" value="Отложить на  другое время"/></h5>
+        </form>
+         
     </body>
 </html>

@@ -7,45 +7,44 @@ package servletView;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import java.util.Locale;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import model.LoaderSQL;
 
 /**
  *
  * @author Кристина
  */
-@WebServlet(name = "ServletNotification", urlPatterns = {"/ServletNotification"})
-public class ServletNotification extends HttpServlet {
+@WebServlet(name = "ServletChange", urlPatterns = {"/ServletChange"})
+public class ServletChange extends HttpServlet {
 
-    private LoaderSQL notif = new LoaderSQL();
-   
-
+    
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP <code>GET</code> method.
      *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+   private LoaderSQL notif = new LoaderSQL();
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        
         String id = req.getParameter("id");
+        String name = req.getParameter("name");
+        String desc = req.getParameter("desc");
+        String conc = req.getParameter("conc");
+        String time = req.getParameter("tch");
         Locale.setDefault(Locale.ENGLISH);
         
         try {
-            notif.deleteDataInTableTask(id);
+            notif.changeDataInTableTask(id, name, time, conc, desc);
 
         } catch (Exception e) {
 
@@ -56,7 +55,6 @@ public class ServletNotification extends HttpServlet {
         resp.sendRedirect("/");
 
     }
-        
     }
 
   
