@@ -2,7 +2,11 @@
 <Context path="/ServerMenagerWeb">
 <Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource"
                maxTotal="100" maxIdle="30" maxWaitMillis="10000"
+<<<<<<< HEAD
+               username="study" password="0101av1998" driverClassName="oracle.jdbc.OracleDriver"
+=======
                username="stud" password="1" driverClassName="oracle.jdbc.OracleDriver"
+>>>>>>> 1ee52643fe15cc9a3c40a009f86ef69556aaea4a
                url="jdbc:oracle:thin:@127.0.0.1:1521:xe"/>
     <!-- Default set of monitored resources. If one of these changes, the    -->
     <!-- web application will be reloaded.                                   -->
