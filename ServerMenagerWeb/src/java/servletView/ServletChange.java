@@ -40,7 +40,7 @@ public class ServletChange extends HttpServlet {
         String name = req.getParameter("name");
         String desc = req.getParameter("desc");
         String conc = req.getParameter("conc");
-        String time = req.getParameter("tch");
+        String time = req.getParameter("time");
         Locale.setDefault(Locale.ENGLISH);
         
         try {

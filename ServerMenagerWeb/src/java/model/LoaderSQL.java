@@ -39,9 +39,6 @@ import java.util.Locale;
 public class LoaderSQL implements Loader {
 
     private Connection con = null;
-    private static final String LOGIN = "data";
-    private static final String PASSWORD = "1";
-    private static final String URL = "jdbc:oracle:thin:@localhost:1521:XE";
 
 //метод записи в базу данных
     @Override
@@ -223,9 +220,8 @@ public class LoaderSQL implements Loader {
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
              conn = ds.getConnection();
-     //       st = conn.prepareStatement("UPDATE TASK SET name_task = '"+ name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
-          st = conn.prepareStatement("UPDATE TASK SET time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
-     st.executeUpdate();
+           st = conn.prepareStatement("UPDATE TASK SET name_task = '"+ name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
+           st.executeUpdate();
        
            // Statement st = conn.createStatement();
            // st.executeUpdate("UPDATE TASK SET name_task = '"+ name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
@@ -266,5 +262,32 @@ public class LoaderSQL implements Loader {
     @Override
     public User readDocument(Document document) throws ParserConfigurationException, SAXException, IOException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    public ResultSet  selectInTableTask() throws SQLException{
+         Connection conn=null;
+         ResultSet rs = null;
+         Statement st =null;
+        try {
+            Locale.setDefault(Locale.ENGLISH);
+
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            conn = ds.getConnection();
+             st = conn.createStatement();
+            rs = st.executeQuery("SELECT*FROM TASK");
+            rs.next();
+           
+            
+        } catch (NamingException | SQLException ex) {
+            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            
+            st.close();
+            conn.close();
+            
+        }
+        return rs;
     }
 }
