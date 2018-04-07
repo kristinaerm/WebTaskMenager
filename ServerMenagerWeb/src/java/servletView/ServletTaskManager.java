@@ -5,23 +5,43 @@
  */
 package servletView;
 
+import exceptions.InvalidRecordFieldException;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.LoaderSQL;
+import model.Record;
 
 /**
  *
  * @author USER
  */
-@WebServlet(name = "ServletTaskManager", urlPatterns = {"/ServletTaskManafger"})
+@WebServlet(name = "ServletTaskManager", urlPatterns = {"/ServletTaskManager"})
 public class ServletTaskManager extends HttpServlet{
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher("/taskManager.jsp").forward(request, response);
-        //request.setAttribute("records", Controller.getRecords());
+        //getServletContext().getRequestDispatcher("/taskManager.jsp").forward(request, response);
+        Record r;
+        
+        if (request.getParameter("submit").equals("a")){
+            try {                
+                r = new Record(request.getParameter("name"), request.getParameter("descr"),request.getParameter("time"),request.getParameter("cont"));
+                LoaderSQL.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
+            } catch (InvalidRecordFieldException | SQLException ex) {
+                Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+            }            
+        }else if (request.getParameter("submit").equals("d")){
+            //**************************
+        } else if (request.getParameter("submit").equals("c")){
+            //**************************
+        }
+        request.setAttribute("records", LoaderSQL.selectInTableTask());
         request.getRequestDispatcher("taskManager.jsp").forward(request, response);
     }
 

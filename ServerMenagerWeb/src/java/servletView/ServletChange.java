@@ -22,7 +22,6 @@ import model.LoaderSQL;
 @WebServlet(name = "ServletChange", urlPatterns = {"/ServletChange"})
 public class ServletChange extends HttpServlet {
 
-    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -32,30 +31,24 @@ public class ServletChange extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-   private LoaderSQL notif = new LoaderSQL();
+    private LoaderSQL notif = new LoaderSQL();
+
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
         String name = req.getParameter("name");
         String desc = req.getParameter("desc");
         String conc = req.getParameter("conc");
         String time = req.getParameter("time");
         Locale.setDefault(Locale.ENGLISH);
-        
+
         try {
             notif.changeDataInTableTask(id, name, time, conc, desc);
-
         } catch (Exception e) {
 
             throw new ServletException("Error during task creation", e);
-
         }
-
         resp.sendRedirect("/");
 
     }
-    }
-
-  
-
+}

@@ -9,14 +9,11 @@ import exceptions.InvalidRecordFieldException;
 import interfaces.Loader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Array;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
@@ -28,7 +25,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import java.beans.PropertyVetoException;
 import java.sql.PreparedStatement;
 import java.util.Locale;
 
@@ -116,7 +112,8 @@ public class LoaderSQL implements Loader {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void addDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException {
+    public static void addDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException {
+
         try {
             Locale.setDefault(Locale.ENGLISH);
 
@@ -127,11 +124,12 @@ public class LoaderSQL implements Loader {
             Statement st = conn.createStatement();
             st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES (" + idTask + ", " + name + ", " + description + ", " + contacts + "," + time + ")");
             st.close();
+            conn.close();
         } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        con.close();
+        
     }
 
     public void addDataInTableUser(String idUser, String passworduser, String loginuser) throws SQLException {
@@ -212,19 +210,19 @@ public class LoaderSQL implements Loader {
     }
 
     public void changeDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException {
-         Connection conn=null;
-         PreparedStatement st = null;
+        Connection conn = null;
+        PreparedStatement st = null;
         try {
             Locale.setDefault(Locale.ENGLISH);
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
-             conn = ds.getConnection();
-           st = conn.prepareStatement("UPDATE TASK SET name_task = '"+ name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
-           st.executeUpdate();
-       
-           // Statement st = conn.createStatement();
-           // st.executeUpdate("UPDATE TASK SET name_task = '"+ name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
+            conn = ds.getConnection();
+            st = conn.prepareStatement("UPDATE TASK SET name_task = '" + name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask + "'");
+            st.executeUpdate();
+
+            // Statement st = conn.createStatement();
+            // st.executeUpdate("UPDATE TASK SET name_task = '"+ name + "', description = '" + description + "',contacts = '" + contacts + "',time_task = '" + time + "' WHERE id_task ='" + idTask+"'");
             st.close();
         } catch (NamingException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
@@ -233,7 +231,7 @@ public class LoaderSQL implements Loader {
     }
 
     public void changeDataInTableUser(String idUser, String passworduser, String loginuser) throws SQLException {
-         Connection conn=null;
+        Connection conn = null;
         try {
             Locale.setDefault(Locale.ENGLISH);
 
@@ -263,10 +261,13 @@ public class LoaderSQL implements Loader {
     public User readDocument(Document document) throws ParserConfigurationException, SAXException, IOException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    public ResultSet  selectInTableTask() throws SQLException{
-         Connection conn=null;
-         ResultSet rs = null;
-         Statement st =null;
+
+    public static LinkedList<Record> selectInTableTask(){
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        LinkedList<Record> rec = new LinkedList<>();
+        Record r;
         try {
             Locale.setDefault(Locale.ENGLISH);
 
@@ -274,20 +275,28 @@ public class LoaderSQL implements Loader {
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
             conn = ds.getConnection();
-             st = conn.createStatement();
+            st = conn.createStatement();
             rs = st.executeQuery("SELECT*FROM TASK");
-            rs.next();
-           
-            
+            while (rs.next()) {
+                r = new Record(rs.getString("name_task"), rs.getString("description"), rs.getString("time_task"), rs.getString("contacts"));
+                r.setId(rs.getString("id_task"));
+                rec.add(r);
+            }
+
         } catch (NamingException | SQLException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidRecordFieldException ex) {
+            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            try {
+                st.close();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
-        finally{
-            
-            st.close();
-            conn.close();
-            
-        }
-        return rs;
+        return rec;
     }
 }

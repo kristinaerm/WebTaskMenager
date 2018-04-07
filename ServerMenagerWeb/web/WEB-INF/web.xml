@@ -25,5 +25,13 @@
         <url-pattern>/change</url-pattern>
     </servlet-mapping>
     
+        <servlet>
+         <servlet-name>ServletTaskManager</servlet-name>
+        <servlet-class>servletView.ServletTaskManager</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServletTaskManager</servlet-name>
+        <url-pattern>/main</url-pattern>
+    </servlet-mapping>
     
 </web-app>
