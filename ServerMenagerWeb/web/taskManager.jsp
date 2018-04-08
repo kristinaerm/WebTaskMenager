@@ -14,6 +14,19 @@
         <link rel="stylesheet" type="text/css" href="notific.css"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
+        <script>
+            function submit() {
+                var radios = document.getElementsByName("radio");
+                for (var i=0;i!==radios.length;i++) {
+                var radio = radios[i];
+                if (radio.checked) {
+                    if (radio.value === "1") {
+                        request.setAttribute("index", i.toString());
+                    }
+                    }
+                }
+            }
+        </script>
     </head>
     <body>
         <form name="mainform" action="main" method="post">
@@ -31,7 +44,7 @@
                                 s+=rec.get(i).getName()+"</td><td><td>";
                                 s+=rec.get(i).getDescription()+"</td><td><td>";
                                 s+=rec.get(i).getContacts()+"</td><td><td>";
-                                s+="<input type=\"radio\" name=\"check"+i+"\"></td></tr>";
+                                s+="<input type=\"radio\" onclick=\"submit();\"></td></tr>";
                                 out.println(s);
                                 s = "";
                             }
@@ -55,13 +68,13 @@
                         <tr><td><label>Контакты</label></td>
                             <td><input type="text" name="cont"></td></tr>
                     </table>
-                    <button type="submit" value="a">Добавить</button>
+                    <button value="a" name = "submit">Добавить</button>
                 </td>
                 
                 <td>
-                    <button type="submit" value="d">Удалить запись</button>
+                    <button value="d"  name = "submit">Удалить запись</button>
                     <br><br>
-                    <button type="submit" value="c">Изменить запись</button>
+                    <button value="c" name = "submit">Изменить запись</button>
                 </td>
             </table>
         </form>

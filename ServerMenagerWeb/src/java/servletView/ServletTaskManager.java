@@ -29,17 +29,24 @@ public class ServletTaskManager extends HttpServlet{
         //getServletContext().getRequestDispatcher("/taskManager.jsp").forward(request, response);
         Record r;
         
-        if (request.getParameter("submit").equals("a")){
-            try {                
-                r = new Record(request.getParameter("name"), request.getParameter("descr"),request.getParameter("time"),request.getParameter("cont"));
-                LoaderSQL.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
-            } catch (InvalidRecordFieldException | SQLException ex) {
-                Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
-            }            
-        }else if (request.getParameter("submit").equals("d")){
-            //**************************
-        } else if (request.getParameter("submit").equals("c")){
-            //**************************
+        char s = request.getParameter("submit").charAt(0);
+        switch (s) {
+            case 'a':
+                try {
+                    r = new Record(request.getParameter("name"), request.getParameter("descr"),request.getParameter("time"),request.getParameter("cont"));
+                    LoaderSQL.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
+                } catch (InvalidRecordFieldException | SQLException ex) {
+                    Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+                }   break;
+            case 'd':
+                String i = request.getParameter("index");
+                //**************************
+                break;
+        //**************************
+            case 'c':
+                break;
+            default:
+                break;
         }
         request.setAttribute("records", LoaderSQL.selectInTableTask());
         request.getRequestDispatcher("taskManager.jsp").forward(request, response);
