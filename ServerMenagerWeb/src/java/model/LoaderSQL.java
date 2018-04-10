@@ -122,10 +122,11 @@ public class LoaderSQL implements Loader {
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
             Connection conn = ds.getConnection();
             Statement st = conn.createStatement();
-            st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES (" + idTask + ", " + name + ", " + description + ", " + contacts + "," + time + ")");
+            st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES ('" + idTask + "', '" + name + "', '" + description + "', '" + contacts + "','" + time + "')");
             st.close();
             conn.close();
-        } catch (NamingException ex) {
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -262,7 +263,7 @@ public class LoaderSQL implements Loader {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public static LinkedList<Record> selectInTableTask(){
+    public LinkedList<Record> selectInTableTask(){
         Connection conn = null;
         ResultSet rs = null;
         Statement st = null;
@@ -283,9 +284,8 @@ public class LoaderSQL implements Loader {
                 rec.add(r);
             }
 
-        } catch (NamingException | SQLException ex) {
-            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidRecordFieldException ex) {
+        } catch (NamingException | SQLException | InvalidRecordFieldException ex) {
+            System.out.println(ex.getMessage());
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
 

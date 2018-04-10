@@ -24,6 +24,8 @@ import model.Record;
  */
 @WebServlet(name = "ServletTaskManager", urlPatterns = {"/ServletTaskManager"})
 public class ServletTaskManager extends HttpServlet{
+    
+    private LoaderSQL service = new LoaderSQL();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //getServletContext().getRequestDispatcher("/taskManager.jsp").forward(request, response);
@@ -33,9 +35,14 @@ public class ServletTaskManager extends HttpServlet{
         switch (s) {
             case 'a':
                 try {
-                    r = new Record(request.getParameter("name"), request.getParameter("descr"),request.getParameter("time"),request.getParameter("cont"));
-                    LoaderSQL.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
+                    String nn=request.getParameter("name");
+                    String dd=request.getParameter("descr");
+                    String tt=request.getParameter("time");
+                    String cc=request.getParameter("cont");
+                    r = new Record(nn, dd,tt,cc);
+                    service.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
                 } catch (InvalidRecordFieldException | SQLException ex) {
+                    System.out.println(ex.getMessage());
                     Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
                 }   break;
             case 'd':
@@ -48,7 +55,7 @@ public class ServletTaskManager extends HttpServlet{
             default:
                 break;
         }
-        request.setAttribute("records", LoaderSQL.selectInTableTask());
+        request.setAttribute("records", service.selectInTableTask());
         request.getRequestDispatcher("taskManager.jsp").forward(request, response);
     }
 
