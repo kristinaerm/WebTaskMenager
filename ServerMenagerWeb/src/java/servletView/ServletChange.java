@@ -35,7 +35,7 @@ public class ServletChange extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String id = req.getParameter("id");
+        String id= req.getParameter("submit");
         String name = req.getParameter("name");
         String desc = req.getParameter("desc");
         String conc = req.getParameter("conc");
@@ -48,7 +48,7 @@ public class ServletChange extends HttpServlet {
 
             throw new ServletException("Error during task creation", e);
         }
-        resp.sendRedirect("/");
+       req.getRequestDispatcher("taskManager.jsp").forward(req, resp);
 
     }
 }

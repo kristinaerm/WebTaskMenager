@@ -112,23 +112,24 @@ public class LoaderSQL implements Loader {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public static void addDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException {
+    public static void addDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException, NamingException {
 
-        try {
+        //try {
             Locale.setDefault(Locale.ENGLISH);
-
+            
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
             Connection conn = ds.getConnection();
             Statement st = conn.createStatement();
-            st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES ('" + idTask + "', '" + name + "', '" + description + "', '" + contacts + "','" + time + "')");
+       
+            st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES ('" + idTask + "','" + name + "','" + description + "','" + contacts + "','" + time + "')");
             st.close();
             conn.close();
-        } catch (Exception ex) {
+       /* } catch (Exception ex) {
             System.out.println(ex.getMessage());
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
 
         
     }
@@ -277,7 +278,7 @@ public class LoaderSQL implements Loader {
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
             conn = ds.getConnection();
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT*FROM TASK");
+            rs = st.executeQuery("SELECT*FROM TASK ");
             while (rs.next()) {
                 r = new Record(rs.getString("name_task"), rs.getString("description"), rs.getString("time_task"), rs.getString("contacts"));
                 r.setId(rs.getString("id_task"));
@@ -298,5 +299,41 @@ public class LoaderSQL implements Loader {
 
         }
         return rec;
+    }
+      public Record selectTask(String idTask){
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+ 
+        Record r = null;
+        try {
+            Locale.setDefault(Locale.ENGLISH);
+
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            conn = ds.getConnection();
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT*FROM TASK WHERE id_task ='" + idTask + "'");
+            while (rs.next()) {
+                r = new Record(rs.getString("name_task"), rs.getString("description"), rs.getString("time_task"), rs.getString("contacts"));
+                r.setId(rs.getString("id_task"));
+                
+            }
+
+        } catch (NamingException | SQLException | InvalidRecordFieldException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+
+            try {
+                st.close();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return r;
     }
 }

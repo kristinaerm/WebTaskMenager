@@ -7,14 +7,23 @@ package servletView;
 
 import exceptions.InvalidRecordFieldException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import model.LoaderSQL;
 import model.Record;
 
@@ -27,13 +36,13 @@ public class ServletTaskManager extends HttpServlet{
     
     private LoaderSQL service = new LoaderSQL();
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException, SQLException, InvalidRecordFieldException {
         //getServletContext().getRequestDispatcher("/taskManager.jsp").forward(request, response);
         Record r;
         
         char s = request.getParameter("submit").charAt(0);
         switch (s) {
-            case 'a':
+            case 'a': 
                 try {
                     String nn=request.getParameter("name");
                     String dd=request.getParameter("descr");
@@ -42,16 +51,25 @@ public class ServletTaskManager extends HttpServlet{
                     r = new Record(nn, dd,tt,cc);
                     service.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
                 } catch (InvalidRecordFieldException | SQLException ex) {
-                    System.out.println(ex.getMessage());
-                    Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+                   // System.out.println(ex.getMessage());
+                    //Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
                 }   break;
+            
             case 'd':
-                String i = request.getParameter("index");
+                String str= request.getParameter("submit").substring(1);  
+               service.deleteDataInTableTask(str);
+            
                 //**************************
                 break;
         //**************************
             case 'c':
+                String str1= request.getParameter("submit").substring(1); 
+                 request.setAttribute ("id" ,str1);
+                 request.getRequestDispatcher("change.jsp").forward(request, response);
+                 
+
                 break;
+          
             default:
                 break;
         }
@@ -71,7 +89,15 @@ public class ServletTaskManager extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (NamingException ex) {
+            Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidRecordFieldException ex) {
+            Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -85,7 +111,15 @@ public class ServletTaskManager extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (NamingException ex) {
+            Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidRecordFieldException ex) {
+            Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

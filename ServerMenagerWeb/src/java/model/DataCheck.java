@@ -48,7 +48,8 @@ public class DataCheck {
             int tminut = Integer.parseInt(curStringDate.substring(14, 16));
             if (y >= ty) {
                 if (m >= tm) {
-                    if (d >= td) {
+                    if(d>td){
+                    if (d == td) {
                         if (hh > thh) {
 
                             dateTimeFormatter.parse(time);
@@ -63,8 +64,12 @@ public class DataCheck {
                             }
 
                         }
+                    }
 
                     }
+                     dateTimeFormatter.parse(time);
+                            return true;
+                    
                 }
             } else {
 
@@ -77,3 +82,4 @@ public class DataCheck {
         return false;
     }
 }
+

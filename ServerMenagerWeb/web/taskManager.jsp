@@ -1,7 +1,9 @@
-<%-- 
-    Document   : taskManager
-    Created on : 17.03.2018, 21:07:17
-    Author     : USER
+<%@page import="model.LoaderSQL"%>
+
+%-- 
+Document   : taskManager
+Created on : 17.03.2018, 21:07:17
+Author     : USER
 --%>
 
 <%@page import="java.util.LinkedList"%>
@@ -17,12 +19,12 @@
         <script>
             function submit() {
                 var radios = document.getElementsByName("radio");
-                for (var i=0;i!==radios.length;i++) {
-                var radio = radios[i];
-                if (radio.checked) {
-                    if (radio.value === "1") {
-                        request.setAttribute("index", i.toString());
-                    }
+                for (var i = 0; i !== radios.length; i++) {
+                    var radio = radios[i];
+                    if (radio.checked) {
+                        if (radio.value === "1") {
+                            request.setAttribute("index", i.toString());
+                        }
                     }
                 }
             }
@@ -31,29 +33,53 @@
     <body>
         <form name="mainform" action="main" method="post">
             <h1>Задачи пользователя</h1>
+            <p><button value="r" name = "submit">Задачи</button></p>
+            
             <table id = "tasklog">
-                <tr><th>№</th><th>Время</th><th>Название</th><th>Описание</th><th>Контакты</th><th>Выбрать</th></tr>
-                <tr><td></td><td></td><td></td><td>Тут пока пусто</td><td></td><td><input type="radio" name="check" ></td></tr>
-                        <%
-                            LinkedList<Record> rec = (LinkedList<Record>)request.getAttribute("records");
-                            String s = "";
-                            if (rec!=null){
-                                for (int i = 0; i<rec.size(); i++){
-                                s+="<tr><td>"+i+"</td><td><td>";
-                                s+=rec.get(i).getTimeString()+"</td><td><td>";
-                                s+=rec.get(i).getName()+"</td><td><td>";
-                                s+=rec.get(i).getDescription()+"</td><td><td>";
-                                s+=rec.get(i).getContacts()+"</td><td><td>";
-                                s+="<input type=\"radio\" onclick=\"submit();\"></td></tr>";
-                                out.println(s);
-                                s = "";
-                            }
-                            }                            
-                        %>
+                <tr>
+                    <th>№</th>
+                    <th><th>Время</th>
+                    <th>  Название</th>
+                    <th>  Описание</th>
+                    <th>  Контакты</th>
+                    <th>  Delete</th>
+                    <th>  Change</th>
+                </tr>
+                <%
+                    LinkedList<Record> r = new LinkedList<>();
+                    r = new LoaderSQL().selectInTableTask();
+                    String submit = request.getParameter("submit");
+                    request.setAttribute("r",r);
+                    if (("r".equals(submit))||("a".equals(submit))) {
+                %>
+                <%
+                   
+                        for (int i = 0; i < r.size(); i++) { 
+                %>
+              
+                <tr ID = "<%= i%>">
+                    <td><%= i+1%><td>
+                    <td><a href=""><%= r.get(i).getTimeString()%></a></td>
+                    <td><%= r.get(i).getName()%></td>
+                    <td><%= r.get(i).getDescription()%></td>
+                    <td><%= r.get(i).getContacts()%></td>
+                    <td><button value="d<%= r.get(i).getId()%>"  name = "submit">Delete</button></td> 
+                    <td><button value="c<%= r.get(i).getId()%>" name = "submit">Change</button></td>
+                </tr>
+                <%
+                    }
+                %>
+                <%
+                        }
+                    
+                %>
+
+
+
             </table>
-            
+
             <br>
-            
+
             <table>
                 <td>
                     <label>Добавить запись:</label> 
@@ -70,12 +96,7 @@
                     </table>
                     <button value="a" name = "submit">Добавить</button>
                 </td>
-                
-                <td>
-                    <button value="d"  name = "submit">Удалить запись</button>
-                    <br><br>
-                    <button value="c" name = "submit">Изменить запись</button>
-                </td>
+
             </table>
         </form>
 
