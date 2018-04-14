@@ -31,12 +31,8 @@
                 <input type="text" maxlength="30" size="30"  name="desc" id="desc" value="<%= r.getDescription()%>"onblur ="bl_cursor2();" onfocus="fc_cursor2();"/></p>
             <p>Контакты:
                 <input type="text" maxlength="40" size="40"  name="conc" id="conc" value="<%= r.getContacts()%>"onblur ="bl_cursor3();" onfocus="fc_cursor3();"/></p>
-            <h4><button name = "submit" value="<%= s%>">Сохранить изменения</button></h4>
-           <%
-                String submit = request.getParameter("submit");
-               if(s.equals("submit"))
-               request.getRequestDispatcher("taskManager.jsp").forward(request, response);
-           %>
+            <h4><button name = "submit" value="c<%= s%>">Сохранить изменения</button></h4>
+          
         </form>
     </body>
 </html>

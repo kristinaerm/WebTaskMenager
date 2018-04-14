@@ -21,8 +21,9 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ServletChange</servlet-name>
-        <url-pattern>/p</url-pattern>
         <url-pattern>/change</url-pattern>
+        <url-pattern>/p</url-pattern>
+        
     </servlet-mapping>
     
         <servlet>

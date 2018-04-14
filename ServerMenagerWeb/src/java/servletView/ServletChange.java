@@ -40,7 +40,7 @@ public class ServletChange extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
        
-         
+        String str1= req.getParameter("submit").substring(1);
         String name = req.getParameter("name");
         String desc = req.getParameter("desc");
         String conc = req.getParameter("conc");
@@ -50,10 +50,9 @@ public class ServletChange extends HttpServlet {
            switch (s) {
             case 'c': 
         try {
-              String id1= req.getParameter("submit");
-            notif.changeDataInTableTask(id1, name, time, conc, desc);
+            notif.changeDataInTableTask(str1, name, time, conc, desc);
         } catch (Exception e) {
-
+            e.printStackTrace();
             throw new ServletException("Error during task creation", e);
         }
        req.getRequestDispatcher("taskManager.jsp").forward(req, resp);
