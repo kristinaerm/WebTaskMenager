@@ -58,8 +58,6 @@ public class ServletTaskManager extends HttpServlet{
             case 'd':
                 String str= request.getParameter("submit").substring(1);  
                service.deleteDataInTableTask(str);
-            
-                //**************************
                 break;
         //**************************
             case 'c':

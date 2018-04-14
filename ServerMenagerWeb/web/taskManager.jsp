@@ -1,41 +1,26 @@
+<%@page import="model.NotificationTimerTasks"%>
+<%@page import="java.util.Timer"%>
 <%@page import="model.LoaderSQL"%>
 
-%-- 
-Document   : taskManager
-Created on : 17.03.2018, 21:07:17
-Author     : USER
---%>
 
 <%@page import="java.util.LinkedList"%>
 <%@page import="model.Record"%>
 <%@page import="java.io.Reader"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="notific.css"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
-        <script>
-            function submit() {
-                var radios = document.getElementsByName("radio");
-                for (var i = 0; i !== radios.length; i++) {
-                    var radio = radios[i];
-                    if (radio.checked) {
-                        if (radio.value === "1") {
-                            request.setAttribute("index", i.toString());
-                        }
-                    }
-                }
-            }
-        </script>
     </head>
     <body>
         <form name="mainform" action="main" method="post">
             <h1>Задачи пользователя</h1>
             <p><button value="r" name = "submit">Задачи</button></p>
             
-            <table id = "tasklog">
+            <table id = "tasklog"> 
                 <tr>
                     <th>№</th>
                     <th><th>Время</th>
@@ -73,9 +58,6 @@ Author     : USER
                         }
                     
                 %>
-
-
-
             </table>
 
             <br>
@@ -98,6 +80,15 @@ Author     : USER
                 </td>
 
             </table>
+            <%            
+                Timer timer = new Timer();
+                
+                LinkedList<Record> rr = new LinkedList<>();
+                rr = new LoaderSQL().selectInTableTask();
+                for (int i = 0; i < rr.size(); i++) {
+                    timer.schedule(new NotificationTimerTasks(rr.size(), rr, request, response), rr.get(i).getTime());
+                }
+            %>
         </form>
 
     </body>
