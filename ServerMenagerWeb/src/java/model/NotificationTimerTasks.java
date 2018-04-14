@@ -39,6 +39,11 @@ public class NotificationTimerTasks extends TimerTask {
        
         for (int i = 0; i < num; i++) {
             try {
+                request.setAttribute("name", records.get(i).getName());
+                request.setAttribute("id", records.get(i).getId());
+                request.setAttribute("time", records.get(i).getTimeString());
+                request.setAttribute("desc", records.get(i).getDescription());
+                request.setAttribute("conc", records.get(i).getContacts());
                 request.getRequestDispatcher("notification.jsp").forward(request, response);
             } catch (ServletException ex) {
                 Logger.getLogger(NotificationTimerTasks.class.getName()).log(Level.SEVERE, null, ex);

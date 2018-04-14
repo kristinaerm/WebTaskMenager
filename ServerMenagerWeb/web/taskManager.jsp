@@ -85,9 +85,26 @@
                 
                 LinkedList<Record> rr = new LinkedList<>();
                 rr = new LoaderSQL().selectInTableTask();
-                for (int i = 0; i < rr.size(); i++) {
-                    timer.schedule(new NotificationTimerTasks(rr.size(), rr, request, response), rr.get(i).getTime());
+                
+                try {
+                    timer.cancel();
+                    int purge = timer.purge();
+                } catch (Exception e) {
                 }
+
+                int n = 1;
+                int i = 0;
+                if (rr.size() > 0) {
+
+                while ((rr.size() > (i + 1)) && (rr.get(i).compareTo(rr.get(i+1)) == 0)) {
+                    n++;
+                    i++;
+                }
+                timer = new Timer();
+                timer.schedule(new NotificationTimerTasks(n, rr, request, response), rr.get(0).getTime());
+        }
+
+
             %>
         </form>
 
