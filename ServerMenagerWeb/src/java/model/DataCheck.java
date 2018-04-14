@@ -46,40 +46,38 @@ public class DataCheck {
             int td = Integer.parseInt(curStringDate.substring(8, 10));
             int thh = Integer.parseInt(curStringDate.substring(11, 13));
             int tminut = Integer.parseInt(curStringDate.substring(14, 16));
-            if (y >= ty) {
-                if (m >= tm) {
-                    if(d>td){
-                    if (d == td) {
-                        if (hh > thh) {
 
+            boolean flag = false;
+
+            if (y >= ty) {
+                dateTimeFormatter.parse(time);
+                return true;
+            } else if (y == ty) {
+                if (m >= tm) {
+                    dateTimeFormatter.parse(time);
+                    return true;
+                } else if (m == tm) {
+                    if (d >= td) {
+                        dateTimeFormatter.parse(time);
+                        return true;
+                    } else if (d == td) {
+                        if (hh >= thh) {
                             dateTimeFormatter.parse(time);
                             return true;
-
-                        } else {
-                            if (hh == thh) {
-                                if (minut >= tminut) {
-                                    dateTimeFormatter.parse(time);
-                                    return true;
-                                }
+                        } else if (hh == thh) {
+                            if (minut >= tminut) {
+                                dateTimeFormatter.parse(time);
+                                return true;
                             }
 
                         }
                     }
-
-                    }
-                     dateTimeFormatter.parse(time);
-                            return true;
-                    
                 }
-            } else {
-
-                return false;
             }
-
-        } catch (ParseException ex) { 
+            return false;
+        } catch (ParseException ex) {
             return false;
         }
-        return false;
+        
     }
 }
-
