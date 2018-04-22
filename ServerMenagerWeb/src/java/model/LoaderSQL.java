@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.sql.PreparedStatement;
+import java.text.ParseException;
 import java.util.Locale;
 
 /**
@@ -55,56 +56,7 @@ public class LoaderSQL implements Loader {
 
     @Override
     public User readDocument(String log, String pass) throws SQLException, InvalidRecordFieldException {
-        User user = null;
-
-        try {
-            Locale.setDefault(Locale.ENGLISH);
-
-            Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup("java:/comp/env");
-            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
-            Connection conn = ds.getConnection();
-
-            Statement st;
-            ResultSet rs;
-            try {
-                st = con.createStatement();
-                rs = st.executeQuery("SELECT id_user FROM users WHERE login = " + log + " and password = " + pass);
-                String id_user = rs.getString("id_user");
-                rs.close();
-                st.close();
-
-                st = con.createStatement();
-                rs = st.executeQuery("SELECT id_task FROM usertask WHERE id_user = " + id_user);
-                LinkedList<String> id_tasks = new LinkedList();
-                while (rs.next()) {
-                    id_tasks.add(rs.getString("id_task"));
-                }
-                rs.close();
-                st.close();
-
-                LinkedList<Record> records = new LinkedList();
-                Record rec;
-                for (int i = 0; i < id_tasks.size(); i++) {
-                    st = con.createStatement();
-                    rs = st.executeQuery("SELECT name_task,description,contacts,time_task FROM task WHERE id_task = " + id_tasks.get(i));
-                    rec = new Record(rs.getString("name_task"), rs.getString("description"), rs.getString("time_task"), rs.getString("contacts"));
-                    records.add(rec);
-                    rs.close();
-                    st.close();
-                }
-
-                user = new User(id_user, log, pass, records);
-
-            } finally {
-                con.close();
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NamingException ex) {
-            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return user;
+        return null;
     }
 
     @Override
@@ -193,7 +145,6 @@ public class LoaderSQL implements Loader {
         Statement st = conn.createStatement();
         st.executeUpdate("DELETE FROM users WHERE idUser='" + idUser + "'");
         st.close();
-
         conn.close();
     }
 
@@ -264,7 +215,7 @@ public class LoaderSQL implements Loader {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public LinkedList<Record> selectInTableTask(){
+    public LinkedList<Record> selectInTableTask() throws ParseException{
         Connection conn = null;
         ResultSet rs = null;
         Statement st = null;
@@ -286,7 +237,7 @@ public class LoaderSQL implements Loader {
             }
 
         } catch (NamingException | SQLException | InvalidRecordFieldException ex) {
-            System.out.println(ex.getMessage());
+          ex.printStackTrace();
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
 
@@ -300,7 +251,7 @@ public class LoaderSQL implements Loader {
         }
         return rec;
     }
-      public Record selectTask(String idTask){
+      public Record selectTask(String idTask) throws ParseException{
         Connection conn = null;
         ResultSet rs = null;
         Statement st = null;

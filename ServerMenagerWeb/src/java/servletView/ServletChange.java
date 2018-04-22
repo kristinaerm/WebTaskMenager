@@ -41,6 +41,7 @@ public class ServletChange extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
        
         String str1= req.getParameter("submit").substring(1);
+        
         String name = req.getParameter("name");
         String desc = req.getParameter("desc");
         String conc = req.getParameter("conc");
@@ -62,6 +63,7 @@ public class ServletChange extends HttpServlet {
         {
             try {
                 notif.deleteDataInTableTask(id);
+                
             } catch (SQLException ex) {
                 Logger.getLogger(ServletChange.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NamingException ex) {

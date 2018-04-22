@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -155,6 +156,8 @@ public class LoaderXML implements Loader {
             try {
                 rec = new Record(name1, description1, timedate1, contacts1);
             } catch (InvalidRecordFieldException ex) {
+            } catch (ParseException ex) {
+                Logger.getLogger(LoaderXML.class.getName()).log(Level.SEVERE, null, ex);
             }
             list.add(rec);
         }

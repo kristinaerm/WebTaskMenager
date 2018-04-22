@@ -1,6 +1,6 @@
 <%-- 
-    Document   : index
-    Created on : 12.03.2018, 17:12:00
+    Document   : error
+    Created on : 28.03.2018, 20:28:19
     Author     : Кристина
 --%>
 
@@ -9,9 +9,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Что-то пошло не так!</h1>
+        <p><a href="taskManager.jsp">Назад</a></p>
     </body>
 </html>
