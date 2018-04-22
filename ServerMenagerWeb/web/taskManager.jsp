@@ -14,24 +14,41 @@
     <head>
         <link rel="stylesheet" type="text/css" href="notific.css"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<<<<<<< HEAD
          <script src="js.js"></script>
         <title>JSP Page</title>
+=======
+        <script type="text/javascript">
+            var t = request.getParameter("tt");
+            setTimeout('location.replace("http://www.tigir.com")', t);
+            /*Изменить текущий адрес страницы через 3 секунды (3000 миллисекунд)*/
+
+        </script>
+        <title>My Task Manager</title>
+>>>>>>> be851f66cc096e3138fdf38ff3dfeba8f4c09515
     </head>
     <body>
         <form name="mainform" action="taskManager" method="post">
             <h1>Задачи пользователя</h1>
+<<<<<<< HEAD
             <p><button value="r" name = "submit">Задачи</button></p>            
             <table id = "tasklog"> 
+=======
+            <p><button value="r" name = "submit">Задачи</button></p>
+
+            <table id="tasklog"> 
+>>>>>>> be851f66cc096e3138fdf38ff3dfeba8f4c09515
                 <tr>
                     <th>№</th>
-                    <th><th>Время</th>
-                    <th>  Название</th>
-                    <th>  Описание</th>
-                    <th>  Контакты</th>
-                    <th>  Delete</th>
-                    <th>  Change</th>
+                    <th>Время</th>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Контакты</th>
+                    <th>Delete</th>
+                    <th> Change</th>
                 </tr>
                 <%
+<<<<<<< HEAD
               
                         LinkedList<Record> r = new LinkedList<>();
                         r = new LoaderSQL().selectInTableTask();
@@ -44,6 +61,20 @@
 
                 <tr ID = "<%= i%>">
                     <td><%= i + 1%><td>
+=======
+                    LinkedList<Record> r = new LinkedList<>();
+                    r = new LoaderSQL().selectInTableTask();
+                    String submit = request.getParameter("submit");
+                    request.setAttribute("r", r);
+                    if (("r".equals(submit)) || ("a".equals(submit))) {
+                %>
+                <%
+                    for (int i = 0; i < r.size(); i++) {
+                %>
+
+                <tr id=i>
+                    <td><%= i + 1%></td>
+>>>>>>> be851f66cc096e3138fdf38ff3dfeba8f4c09515
                     <td><a href=""><%= r.get(i).getTimeString()%></a></td>
                     <td><%= r.get(i).getName()%></td>
                     <td><%= r.get(i).getDescription()%></td>
@@ -55,10 +86,14 @@
                     }
                 %>
                 <%
+<<<<<<< HEAD
                         }
 
                    
 
+=======
+                    }
+>>>>>>> be851f66cc096e3138fdf38ff3dfeba8f4c09515
                 %>
             </table>
             <%                try {
@@ -83,6 +118,7 @@
                 </td>
 
             </table>
+<<<<<<< HEAD
             <%
                     Timer timer = new Timer();
 
@@ -109,8 +145,9 @@
                 } catch (Exception e) {
                     throw new Exception("Something happened!");
                 }
+=======
+>>>>>>> be851f66cc096e3138fdf38ff3dfeba8f4c09515
 
-            %>
         </form>
 
     </body>

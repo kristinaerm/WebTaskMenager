@@ -27,6 +27,10 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.sql.PreparedStatement;
 import java.text.ParseException;
+<<<<<<< HEAD
+=======
+import java.text.SimpleDateFormat;
+>>>>>>> be851f66cc096e3138fdf38ff3dfeba8f4c09515
 import java.util.Locale;
 
 /**
@@ -36,6 +40,7 @@ import java.util.Locale;
 public class LoaderSQL implements Loader {
 
     private Connection con = null;
+    public static long tttt=0;
 
 //метод записи в базу данных
     @Override
@@ -286,5 +291,48 @@ public class LoaderSQL implements Loader {
 
         }
         return r;
+    }
+      
+
+      
+    public long selectTime(){
+        Connection conn = null;
+        ResultSet rs = null;
+        Statement st = null;
+        long ttt = 0;
+        Record r = null;
+        try {
+            Locale.setDefault(Locale.ENGLISH);
+
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:/comp/env");
+            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+            conn = ds.getConnection();
+            st = conn.createStatement();
+            rs = st.executeQuery("SELECT time_task FROM TASK");
+            try{
+                rs.next();
+                long curTime = System.currentTimeMillis();
+                SimpleDateFormat DATETIMEFORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                long notifTime = DATETIMEFORMATTER.parse(rs.getString("time_task")).getTime();
+                notifTime -= curTime;
+                ttt= notifTime;
+            } catch (SQLException | ParseException e){
+                ttt=-1;
+            }
+
+        } catch (NamingException | SQLException ex) {
+            
+            System.out.println(ex.getMessage());
+            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                st.close();
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return ttt;
     }
 }
