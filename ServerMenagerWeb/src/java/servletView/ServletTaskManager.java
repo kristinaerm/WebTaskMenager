@@ -71,7 +71,7 @@ public class ServletTaskManager extends HttpServlet{
             default:
                 break;
         }
-        request.setAttribute("records", service.selectInTableTask());
+        request.setAttribute ("tt" , new LoaderSQL().selectTime());
         request.getRequestDispatcher("taskManager.jsp").forward(request, response);
     }
 
