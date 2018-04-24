@@ -7,26 +7,17 @@ package servletView;
 
 import exceptions.InvalidRecordFieldException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 import model.DataCheck;
-import static model.DataCheck.timeCheck;
 import model.LoaderSQL;
 import model.Record;
 
@@ -35,64 +26,70 @@ import model.Record;
  * @author USER
  */
 @WebServlet(name = "ServletTaskManager", urlPatterns = {"/ServletTaskManager"})
-public class ServletTaskManager extends HttpServlet{
-    
+public class ServletTaskManager extends HttpServlet {
+
     private LoaderSQL service = new LoaderSQL();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException, SQLException, InvalidRecordFieldException, ParseException {
         //getServletContext().getRequestDispatcher("/taskManager.jsp").forward(request, response);
         Record r;
-        boolean f=true;
+        boolean f = true;
         char s = request.getParameter("submit").charAt(0);
+        
         switch (s) {
-            case 'a': 
+            case 'a':
                 try {
-                    String nn=request.getParameter("name");
-                    String dd=request.getParameter("descr");
-                    String tt=request.getParameter("time");
-                    String cc=request.getParameter("cont");
-                    r = new Record(nn, dd,tt,cc);
-                    f=DataCheck.timeCheck(r.getTimeString());
+                    String nn = request.getParameter("name");
+                    String dd = request.getParameter("descr");
+                    String tt = request.getParameter("time");
+                    String cc = request.getParameter("cont");
+                    r = new Record(nn, dd, tt, cc);
+                    f = DataCheck.timeCheck(r.getTimeString());
                     service.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
-                     
+
                 } catch (Exception ex) {
-                  //  if(!f)
-                //            {
-                //    request.getRequestDispatcher("error.jsp").forward(request, response);
-                //            }
-               //     request.getRequestDispatcher("taskManager.jsp").forward(request, response);
-                   // System.out.println(ex.getMessage());
+                    //  if(!f)
+                    //            {
+                    //    request.getRequestDispatcher("error.jsp").forward(request, response);
+                    //            }
+                    //     request.getRequestDispatcher("taskManager.jsp").forward(request, response);
+                    // System.out.println(ex.getMessage());
                     //Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
-                }   break;
-            
-            case 'd':
-                try{
-                String str= request.getParameter("submit").substring(1);  
-                request.setAttribute ("d" ,"d");           
-               service.deleteDataInTableTask(str);
-                }catch(Exception e)
-                {
-                    request.getRequestDispatcher("error.jsp").forward(request, response); 
                 }
-                
                 break;
-        //**************************
-            case 'c':
-                 try{
-                String str1= request.getParameter("submit").substring(1); 
-                 request.setAttribute ("id" ,str1);
-                 request.getRequestDispatcher("change.jsp").forward(request, response);
-                 }catch(Exception e)
-                {
-                    request.getRequestDispatcher("taskManager.jsp").forward(request, response); 
+
+            case 'd':
+                try {
+                    String str = request.getParameter("submit").substring(1);
+                    request.setAttribute("d", "d");
+                    service.deleteDataInTableTask(str);
+                } catch (Exception e) {
+                    request.getRequestDispatcher("error.jsp").forward(request, response);
                 }
 
                 break;
-          
+            //**************************
+            case 'c':
+                try {
+                    String str1 = request.getParameter("submit").substring(1);
+                    request.setAttribute("id", str1);
+                    request.getRequestDispatcher("change.jsp").forward(request, response);
+                } catch (Exception e) {
+                    request.getRequestDispatcher("taskManager.jsp").forward(request, response);
+                }
+
+                break;
+
             default:
                 break;
         }
-        request.setAttribute ("tt" , new LoaderSQL().selectTime());
+        Object[] o = new LoaderSQL().selectTime();
+        long tt = (long) o[0];
+        request.setAttribute("tt", String.valueOf(tt));
+        Record rec = (Record) o[1];
+        String ii = "";
+        ii+=""+rec.getName()+"!";
+        request.setAttribute("mes", ii);
         request.getRequestDispatcher("taskManager.jsp").forward(request, response);
     }
 

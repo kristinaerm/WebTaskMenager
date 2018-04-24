@@ -27,10 +27,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import java.sql.PreparedStatement;
 import java.text.ParseException;
-<<<<<<< HEAD
-=======
 import java.text.SimpleDateFormat;
->>>>>>> be851f66cc096e3138fdf38ff3dfeba8f4c09515
 import java.util.Locale;
 
 /**
@@ -40,7 +37,7 @@ import java.util.Locale;
 public class LoaderSQL implements Loader {
 
     private Connection con = null;
-    public static long tttt=0;
+    public static long tttt = 0;
 
 //метод записи в базу данных
     @Override
@@ -72,23 +69,22 @@ public class LoaderSQL implements Loader {
     public static void addDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException, NamingException {
 
         //try {
-            Locale.setDefault(Locale.ENGLISH);
-            
-            Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup("java:/comp/env");
-            DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
-            Connection conn = ds.getConnection();
-            Statement st = conn.createStatement();
-       
-            st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES ('" + idTask + "','" + name + "','" + description + "','" + contacts + "','" + time + "')");
-            st.close();
-            conn.close();
-       /* } catch (Exception ex) {
+        Locale.setDefault(Locale.ENGLISH);
+
+        Context initContext = new InitialContext();
+        Context envContext = (Context) initContext.lookup("java:/comp/env");
+        DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
+        Connection conn = ds.getConnection();
+        Statement st = conn.createStatement();
+
+        st.executeUpdate("INSERT INTO task (id_task, name_task,description,contacts,time_task) VALUES ('" + idTask + "','" + name + "','" + description + "','" + contacts + "','" + time + "')");
+        st.close();
+        conn.close();
+        /* } catch (Exception ex) {
             System.out.println(ex.getMessage());
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         }*/
 
-        
     }
 
     public void addDataInTableUser(String idUser, String passworduser, String loginuser) throws SQLException {
@@ -220,7 +216,7 @@ public class LoaderSQL implements Loader {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public LinkedList<Record> selectInTableTask() throws ParseException{
+    public LinkedList<Record> selectInTableTask() throws ParseException {
         Connection conn = null;
         ResultSet rs = null;
         Statement st = null;
@@ -234,7 +230,7 @@ public class LoaderSQL implements Loader {
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
             conn = ds.getConnection();
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT*FROM TASK ");
+            rs = st.executeQuery("SELECT*FROM TASK  order by time_task");
             while (rs.next()) {
                 r = new Record(rs.getString("name_task"), rs.getString("description"), rs.getString("time_task"), rs.getString("contacts"));
                 r.setId(rs.getString("id_task"));
@@ -242,7 +238,7 @@ public class LoaderSQL implements Loader {
             }
 
         } catch (NamingException | SQLException | InvalidRecordFieldException ex) {
-          ex.printStackTrace();
+            ex.printStackTrace();
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
 
@@ -256,11 +252,12 @@ public class LoaderSQL implements Loader {
         }
         return rec;
     }
-      public Record selectTask(String idTask) throws ParseException{
+
+    public Record selectTask(String idTask) throws ParseException {
         Connection conn = null;
         ResultSet rs = null;
         Statement st = null;
- 
+
         Record r = null;
         try {
             Locale.setDefault(Locale.ENGLISH);
@@ -274,7 +271,7 @@ public class LoaderSQL implements Loader {
             while (rs.next()) {
                 r = new Record(rs.getString("name_task"), rs.getString("description"), rs.getString("time_task"), rs.getString("contacts"));
                 r.setId(rs.getString("id_task"));
-                
+
             }
 
         } catch (NamingException | SQLException | InvalidRecordFieldException ex) {
@@ -292,15 +289,16 @@ public class LoaderSQL implements Loader {
         }
         return r;
     }
-      
 
-      
-    public long selectTime(){
+    public Object[] selectTime() {
         Connection conn = null;
         ResultSet rs = null;
         Statement st = null;
-        long ttt = 0;
-        Record r = null;
+        long smallesttime = -1;
+        Record rec = new Record();
+        long curTime;
+        long notifTime;
+
         try {
             Locale.setDefault(Locale.ENGLISH);
 
@@ -309,21 +307,30 @@ public class LoaderSQL implements Loader {
             DataSource ds = (DataSource) envContext.lookup("jdbc/TestDB");
             conn = ds.getConnection();
             st = conn.createStatement();
-            rs = st.executeQuery("SELECT time_task FROM TASK");
-            try{
-                rs.next();
-                long curTime = System.currentTimeMillis();
-                SimpleDateFormat DATETIMEFORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                long notifTime = DATETIMEFORMATTER.parse(rs.getString("time_task")).getTime();
+            rs = st.executeQuery("SELECT time_task, id_task, description, contacts, name_task FROM TASK order by time_task");
+            while (rs.next()) {
+                curTime = System.currentTimeMillis();
+                SimpleDateFormat DATETIMEFORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+                notifTime = DATETIMEFORMATTER.parse(rs.getString("time_task")).getTime();
                 notifTime -= curTime;
-                ttt= notifTime;
-            } catch (SQLException | ParseException e){
-                ttt=-1;
+                if ((notifTime > 0)&&(smallesttime<0)) {
+                    smallesttime = notifTime / 1000;
+                    rec.setContacts(rs.getString("contacts"));
+                    rec.setDescription(rs.getString("description"));
+                    rec.setId(rs.getString("id_task"));
+                    rec.setName(rs.getString("name_task"));
+                    rec.setTime(rs.getString("time_task"));
+                }
+
             }
 
         } catch (NamingException | SQLException ex) {
-            
+
             System.out.println(ex.getMessage());
+            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidRecordFieldException ex) {
             Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
@@ -333,6 +340,9 @@ public class LoaderSQL implements Loader {
                 Logger.getLogger(LoaderSQL.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return ttt;
+        Object[] o = new Object[2];
+        o[0] = smallesttime;
+        o[1] = rec;
+        return o;
     }
 }
