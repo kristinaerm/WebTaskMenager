@@ -47,23 +47,23 @@ public class DataCheck {
             int thh = Integer.parseInt(curStringDate.substring(11, 13));
             int tminut = Integer.parseInt(curStringDate.substring(14, 16));
 
-            if (y >= ty) {
+            if (y > ty) {
                 dateTimeFormatter.parse(time);
                 return true;
             } else if (y == ty) {
-                if (m >= tm) {
+                if (m > tm) {
                     dateTimeFormatter.parse(time);
                     return true;
                 } else if (m == tm) {
-                    if (d >= td) {
+                    if (d > td) {
                         dateTimeFormatter.parse(time);
                         return true;
                     } else if (d == td) {
-                        if (hh >= thh) {
+                        if (hh > thh) {
                             dateTimeFormatter.parse(time);
                             return true;
                         } else if (hh == thh) {
-                            if (minut >= tminut) {
+                            if (minut > tminut) {
                                 dateTimeFormatter.parse(time);
                                 return true;
                             }
