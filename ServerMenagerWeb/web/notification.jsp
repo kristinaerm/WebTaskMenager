@@ -19,8 +19,11 @@
     </head>
     <body>
         <form action="p" method="post">
-            <p>id task <input type="text" maxlength="25" size="25" id="txt" name="id"/></p>
-           
+              <%
+                String s =request.getAttribute("id").toString();  
+               // Record rec =(Record)request.getAttribute("id");  
+                Record  r = new LoaderSQL().selectTask(s);
+            %>       
             <p>Дата и время:
                 <input type="text" maxlength="25" size="25" id="txt" name="time"/></p>
             <p>Название:
@@ -29,14 +32,10 @@
                 <input type="text" maxlength="30" size="30" id="txt2" name="desc"/></p>
             <p>Контакты:
                 <input type="text" maxlength="40" size="40" id="txt3" name="conc"/></p>
-            
-             <h4> <button value="d" name = "submit">Выполнить</button></h4>
-           
-         </form >
-          
-        <h3><input type="text" maxlength="40" size="25" id="txt4" name="tch"/></h3>
-       <h5><button value="c" name = "submit">Отложить на  другое время</button></h5>
-        
-         
+            <h4> <button value="d" name = "submit">Выполнить</button></h4>
+            <h3><input type="text" maxlength="40" size="25" id="txt4" name="tch"/></h3>
+            <h5><button value="c" name = "submit">Отложить на  другое время</button></h5>
+        </form >
+
     </body>
 </html>

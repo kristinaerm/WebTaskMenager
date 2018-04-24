@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class DataCheck {
 
-    private static final SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private static final SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
     public static boolean nameCheck(String name) {
         return name.length() <= 15;
@@ -41,6 +41,11 @@ public class DataCheck {
             int minut = Integer.parseInt(time.substring(14, 16));
 
             //текущее время и дата
+         /*   int ty = Integer.parseInt(curStringDate.substring(0, 4));
+            int tm = Integer.parseInt(curStringDate.substring(5, 7));
+            int td = Integer.parseInt(curStringDate.substring(8, 10));
+            int thh = Integer.parseInt(curStringDate.substring(11, 13));
+            int tminut = Integer.parseInt(curStringDate.substring(14, 16));*/
             int ty = Integer.parseInt(curStringDate.substring(0, 4));
             int tm = Integer.parseInt(curStringDate.substring(5, 7));
             int td = Integer.parseInt(curStringDate.substring(8, 10));
@@ -74,6 +79,7 @@ public class DataCheck {
             }
             return false;
         } catch (ParseException ex) {
+            ex.printStackTrace();
             return false;
         }
     }

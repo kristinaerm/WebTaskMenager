@@ -21,8 +21,13 @@ h5{
     bottom: 500px; /* ��������� �� ������� ���� */
     right: 830px;
 }
-body {
-  
+body{
+   background:url(1.png);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
 }
 input{
 }

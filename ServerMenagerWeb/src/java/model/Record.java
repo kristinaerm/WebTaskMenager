@@ -22,7 +22,7 @@ public class Record implements Comparable, Serializable {
     private String name;
     private String description;
     private Date time;
-    public static final SimpleDateFormat DATETIMEFORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static final SimpleDateFormat DATETIMEFORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String contacts;
 
     public Record() {
@@ -33,7 +33,7 @@ public class Record implements Comparable, Serializable {
         id = UUID.randomUUID().toString();
     }
 
-    public Record(String n, String d, String t, String c) throws InvalidRecordFieldException {
+    public Record(String n, String d, String t, String c) throws InvalidRecordFieldException, ParseException {
         if (DataCheck.nameCheck(n)) {
             if (DataCheck.descriptionCheck(d)) {
                 if (DataCheck.contactsCheck(c)) {
@@ -41,11 +41,11 @@ public class Record implements Comparable, Serializable {
                         name = n;
                         description = d;
                         contacts = c;
-                        try {
+                        
                             time = DATETIMEFORMATTER.parse(t);
-                        } catch (ParseException e) {
-                            time = new Date();
-                        }
+                       
+                            //time = new Date();
+                        
                         id = UUID.randomUUID().toString();
                     } else {
                         throw new InvalidRecordFieldException("Неправильный формат даты или прошедшее время. дд-мм-гггг чч:мм");

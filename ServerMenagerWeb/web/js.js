@@ -36,6 +36,22 @@ function bl_cursor3() {
     if (document.getElementById('conc').value === "") {
       document.getElementById('conc').value = document.getParameter("conc");
     }
+    
 }
+function del() {
 
+    confirm("Вы действительно,хотите удалить?");
+}
+function er(){
+    /*var now = new Date();
+   obj=document.getElementById('time').value; 
+    if(obj<now.getTime().toString())
+    {
+        alert('Прошедшее время!');
+    }else*/
+     if ((document.getElementById('name').value === "")||(document.getElementById('time').value === "")||(document.getElementById('descr').value === "")||(document.getElementById('conc').value === "")){
+         alert('Все поля должны быть заполнены!');
+     }
+
+}
 
