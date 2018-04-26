@@ -29,7 +29,6 @@
             clock = String.valueOf(tt);
             Record rec = (Record) o[1];
             mess = "You need to: "+rec.getName()+".";
-            out.println("<p>" + clock + mess + "</p>");
         %>
 
         <script>
