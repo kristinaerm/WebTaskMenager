@@ -17,28 +17,25 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script src="js.js"></script>
         <title>My Task Manager</title>
-
-
-        
     </head>
     <body>
 
 
-            <%
-                String clock = "0";
-                String mess = "0";
-                if (request.getAttribute("tt") != null) {
-                    out.println("<p>" + request.getAttribute("tt").toString() + "</p>");
-                    clock = request.getAttribute("tt").toString();
-                    mess = request.getAttribute("mes").toString();
-                    out.println("<p>" + clock.toString() + mess.toString()+"</p>");
-                }
+        <%
+            String clock = "";
+            String mess = "";
+            Object[] o = new LoaderSQL().selectTime();
+            long tt = (long) o[0];
+            clock = String.valueOf(tt);
+            Record rec = (Record) o[1];
+            mess = "You need to :"+rec.getName();
+            out.println("<p>" + clock + mess + "</p>");
+        %>
 
-            %>
-
-            <script>
+        <script>
             var timeout = <%=clock%>;
-            
+            var m = '<%=mess%>';
+
             function timer()
             {
                 if (--timeout > 0)
@@ -46,15 +43,14 @@
                     window.setTimeout("timer()", 1000);
                 } else
                 {
-                    alert(timeout.toString());
+                    alert(m);
+
                 }
             }
 
         </script>
         <form name="mainform" action="taskManager" method="post">
             <h1>Задачи пользователя</h1>
-
-            <p><button value="r" name = "submit">Задачи</button></p>
 
             <table id="tasklog"> 
 
@@ -68,11 +64,10 @@
                     <th> Change</th>
                 </tr>
                 <%
-
                     LinkedList<Record> r = new LinkedList<>();
                     r = new LoaderSQL().selectInTableTask();
                     String submit = request.getParameter("submit");
-                    if (("r".equals(submit)) || ("a".equals(submit))||("c".equals(submit)) ||("d".equals(submit)) ) {
+
 
                 %>
                 <%                    for (int i = 0; i < r.size(); i++) {
@@ -89,9 +84,6 @@
                     <td><button onclick="del()" value="d<%= r.get(i).getId()%>"  name = "submit">Delete</button></td> 
                     <td><button value="c<%= r.get(i).getId()%>" name = "submit">Change</button></td>
                 </tr>
-                <%
-                    }
-                %>
                 <%
                     }
                 %>
@@ -121,9 +113,7 @@
 
         </form>
         <script>
-
             timer();
-
         </script>
     </body>
 </html>

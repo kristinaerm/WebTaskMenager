@@ -63,7 +63,7 @@ public class ServletTaskManager extends HttpServlet {
                     String str = request.getParameter("submit").substring(1);
                     request.setAttribute("d", "d");
                     service.deleteDataInTableTask(str);
-                } catch (Exception e) {
+                } catch (SQLException | NamingException e) {
                     request.getRequestDispatcher("error.jsp").forward(request, response);
                 }
 
@@ -83,13 +83,7 @@ public class ServletTaskManager extends HttpServlet {
             default:
                 break;
         }
-        Object[] o = new LoaderSQL().selectTime();
-        long tt = (long) o[0];
-        request.setAttribute("tt", String.valueOf(tt));
-        Record rec = (Record) o[1];
-        String ii = "";
-        ii+=""+rec.getName()+"!";
-        request.setAttribute("mes", ii);
+        
         request.getRequestDispatcher("taskManager.jsp").forward(request, response);
     }
 
