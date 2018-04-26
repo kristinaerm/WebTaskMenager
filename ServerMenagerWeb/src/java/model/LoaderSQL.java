@@ -66,7 +66,7 @@ public class LoaderSQL implements Loader {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public static void addDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException, NamingException {
+    public void addDataInTableTask(String idTask, String name, String time, String contacts, String description) throws SQLException, NamingException {
 
         //try {
         Locale.setDefault(Locale.ENGLISH);

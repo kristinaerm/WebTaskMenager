@@ -9,6 +9,7 @@ import exceptions.InvalidRecordFieldException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
@@ -35,7 +36,7 @@ public class ServletTaskManager extends HttpServlet {
         Record r;
         boolean f = true;
         char s = request.getParameter("submit").charAt(0);
-        
+
         switch (s) {
             case 'a':
                 try {
@@ -45,16 +46,19 @@ public class ServletTaskManager extends HttpServlet {
                     String cc = request.getParameter("cont");
                     r = new Record(nn, dd, tt, cc);
                     f = DataCheck.timeCheck(r.getTimeString());
-                    service.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
+                    LinkedList<Record> list = new LinkedList<>();
+                    list = new LoaderSQL().selectInTableTask();
+                    boolean flag = true;
+                    int i = 0;
+                    while ((i < list.size())&&(!list.get(i).getName().equals(r.getName()))&&(!list.get(i).getDescription().equals(r.getDescription()))&&(!list.get(i).getContacts().equals(r.getContacts()))&&(!list.get(i).getTimeString().equals(r.getTimeString()))){
+                        i++;
+                    }
+                    if (i==list.size()){
+                        service.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
+                    }                   
 
-                } catch (Exception ex) {
-                    //  if(!f)
-                    //            {
-                    //    request.getRequestDispatcher("error.jsp").forward(request, response);
-                    //            }
-                    //     request.getRequestDispatcher("taskManager.jsp").forward(request, response);
-                    // System.out.println(ex.getMessage());
-                    //Logger.getLogger(ServletTaskManager.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidRecordFieldException | SQLException | ParseException | NamingException ex) {
+                    request.getRequestDispatcher("error.jsp").forward(request, response);
                 }
                 break;
 
@@ -83,7 +87,6 @@ public class ServletTaskManager extends HttpServlet {
             default:
                 break;
         }
-        
         request.getRequestDispatcher("taskManager.jsp").forward(request, response);
     }
 
