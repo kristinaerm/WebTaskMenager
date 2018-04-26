@@ -1,11 +1,6 @@
-<%@page import="model.NotificationTimerTasks"%>
-<%@page import="java.util.Timer"%>
 <%@page import="model.LoaderSQL"%>
-
-
 <%@page import="java.util.LinkedList"%>
 <%@page import="model.Record"%>
-<%@page import="java.io.Reader"%>
 <%@page errorPage="error.jsp"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
@@ -28,7 +23,7 @@
             long tt = (long) o[0];
             clock = String.valueOf(tt);
             Record rec = (Record) o[1];
-            mess = "You need to: "+rec.getName()+".";
+            mess = "You need to: " + rec.getName() + ".";
         %>
 
         <script>
@@ -40,7 +35,7 @@
                 if (--timeout > 0)
                 {
                     window.setTimeout("timer()", 1000);
-                } else if (timeout===0)
+                } else if (timeout === 0)
                 {
                     alert(m);
                     location.reload();
@@ -63,13 +58,10 @@
                     <th> Change</th>
                 </tr>
                 <%
-                    LinkedList<Record> r = new LinkedList<>();
-                    r = new LoaderSQL().selectInTableTask();
-                    String submit = request.getParameter("submit");
-
-
+                    LinkedList<Record> r = new LoaderSQL().selectInTableTask();
                 %>
-                <%                    for (int i = 0; i < r.size(); i++) {
+                <%
+                    for (int i = 0; i < r.size(); i++) {
                 %>
 
 
@@ -106,13 +98,12 @@
                     </table>
                     <button onclick="er()" value="a" name = "submit">Добавить</button>
                 </td>
-
             </table>
-
-
         </form>
+
         <script>
             timer();
         </script>
+
     </body>
 </html>

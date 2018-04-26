@@ -29,12 +29,10 @@ import model.Record;
 @WebServlet(name = "ServletTaskManager", urlPatterns = {"/ServletTaskManager"})
 public class ServletTaskManager extends HttpServlet {
 
-    private LoaderSQL service = new LoaderSQL();
+    private final LoaderSQL service = new LoaderSQL();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NamingException, SQLException, InvalidRecordFieldException, ParseException {
-        //getServletContext().getRequestDispatcher("/taskManager.jsp").forward(request, response);
         Record r;
-        boolean f = true;
         char s = request.getParameter("submit").charAt(0);
 
         switch (s) {
@@ -45,18 +43,16 @@ public class ServletTaskManager extends HttpServlet {
                     String tt = request.getParameter("time");
                     String cc = request.getParameter("cont");
                     r = new Record(nn, dd, tt, cc);
-                    f = DataCheck.timeCheck(r.getTimeString());
-                    LinkedList<Record> list = new LinkedList<>();
+                    DataCheck.timeCheck(r.getTimeString());
+                    LinkedList<Record> list;
                     list = new LoaderSQL().selectInTableTask();
-                    boolean flag = true;
                     int i = 0;
                     while ((i < list.size())&&(!list.get(i).getName().equals(r.getName()))&&(!list.get(i).getDescription().equals(r.getDescription()))&&(!list.get(i).getContacts().equals(r.getContacts()))&&(!list.get(i).getTimeString().equals(r.getTimeString()))){
                         i++;
                     }
                     if (i==list.size()){
                         service.addDataInTableTask(r.getId(), r.getName(), r.getTimeString(), r.getContacts(), r.getDescription());
-                    }                   
-
+                    }
                 } catch (InvalidRecordFieldException | SQLException | ParseException | NamingException ex) {
                     request.getRequestDispatcher("error.jsp").forward(request, response);
                 }
@@ -70,18 +66,16 @@ public class ServletTaskManager extends HttpServlet {
                 } catch (SQLException | NamingException e) {
                     request.getRequestDispatcher("error.jsp").forward(request, response);
                 }
-
                 break;
-            //**************************
+            
             case 'c':
                 try {
                     String str1 = request.getParameter("submit").substring(1);
                     request.setAttribute("id", str1);
                     request.getRequestDispatcher("change.jsp").forward(request, response);
-                } catch (Exception e) {
+                } catch (IOException | ServletException e) {
                     request.getRequestDispatcher("taskManager.jsp").forward(request, response);
                 }
-
                 break;
 
             default:
