@@ -28,7 +28,7 @@
             long tt = (long) o[0];
             clock = String.valueOf(tt);
             Record rec = (Record) o[1];
-            mess = "You need to :"+rec.getName();
+            mess = "You need to: "+rec.getName()+".";
             out.println("<p>" + clock + mess + "</p>");
         %>
 
@@ -41,10 +41,10 @@
                 if (--timeout > 0)
                 {
                     window.setTimeout("timer()", 1000);
-                } else
+                } else if (timeout===0)
                 {
                     alert(m);
-
+                    location.reload();
                 }
             }
 
